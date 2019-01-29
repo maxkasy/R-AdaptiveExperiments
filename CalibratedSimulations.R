@@ -14,14 +14,14 @@ source("ThompsonHierarchicalFunctions/calibratedSimulationFunctionsCovariates.R"
 fillcolor="skyblue4"
 
 printFigures=F
-DoHistograms=T
-DoNoCovariates=T
-DoCovariates=F
+DoNoCovariates=F
+DoHistograms=F
+DoCovariates=T
 
 DataList=ReadAllData(printFigures)
 
 #number of replications
-MC_replicates=1000
+MC_replicates=20000
 
 
 #Simulations without covariates
@@ -49,7 +49,7 @@ if (DoNoCovariates) {
 }
 
 
-
+MC_replicates=5000
 
 #Simulations with covariates
 if (DoCovariates) {

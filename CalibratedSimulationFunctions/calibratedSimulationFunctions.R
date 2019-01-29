@@ -131,11 +131,12 @@ DesignTable=function(DataList,methods,MC_replicates=100,columnames=NULL,filename
       colnames(RegretTable)=c("Statistic", map(DataList, function(data) 
                           paste("$\\theta = (", toString(data$theta,sep=", "), ")$")))
   }
-browser()  
+ 
   #write to tex file, plot histograms
   if (!is.null(filename)) {
       PrintRegretTable(RegretTable,filename,DataList[[1]]$dataname,MC_replicates, length(methods))
-      if (DoHistograms) PrintRegretHistogram(shareTreatmentsList,filename, paste(DataList[[1]]$filename, " et al.", sep=""), MC_replicates, map_dbl(DataList, "waves"))
+      if (DoHistograms) PrintRegretHistogram(shareTreatmentsList,filename, DataList[[1]]$dataname, #paste(DataList[[1]]$filename, " et al.", sep=""), 
+                                             MC_replicates, map_dbl(DataList, "waves"))
   }      
 }
 
@@ -188,7 +189,7 @@ PrintRegretHistogram=function(shareTreatmentsList,filename, dataname,MC_replicat
   histTibble$waves %<>% factor(levels=c("2 waves", "4 waves", "10 waves"))
   histTibble$algorithm %<>% factor(levels=c("non_adaptive", "modifiedThompson"))
   maxregret=max(histTibble$regret)
-  
+  browser()
   #calculate CDF of regret
   histTibble %<>% arrange(waves, algorithm,regret, probability) %>%
     group_by(waves, algorithm) %>%
@@ -201,7 +202,7 @@ PrintRegretHistogram=function(shareTreatmentsList,filename, dataname,MC_replicat
     scale_fill_manual(labels = c("non-adaptive", "modified Thompson"),
                       values = c("skyblue4", "skyblue")) +
     scale_y_continuous(limits=c(0,1)) +
-    scale_x_reverse() + #(breaks=unique(histTibble$regret)) +
+    #scale_x_reverse() + #(breaks=unique(histTibble$regret)) +
     facet_grid(cols=vars(waves) ) +
     #scale_fill_viridis(discrete=TRUE) +
     coord_flip() +

@@ -36,7 +36,7 @@ draw.beta = function(alpha,beta,theta,prop.sd,nx) {
 }
 
 sample.theta.d = function(NNd, SSd, nx, 
-                          RR=10000) { #sampling period
+                          RR=2000) { #sampling period
   B = 1000 #burn in period
   MM = B + RR
   # Metropolis tuning parameters
@@ -65,7 +65,7 @@ sample.theta.d = function(NNd, SSd, nx,
 DtchoiceMCMCProbabilities=function(Y,D,X, #outcomes, treatments, and covariates thus far
                                    k,nx, #number of treatments and number of strata
                                    C=rep(0,k), #vector of treatment cost
-                                   RR=5000){ #number of replication draws
+                                   RR=2000){ #number of replication draws
   
   SS=tapply(Y,list(D,X),sum, default=0) #matrix of successes
   NN=tapply(Y,list(D,X),length, default=0) #matrix of trials
@@ -77,8 +77,6 @@ DtchoiceMCMCProbabilities=function(Y,D,X, #outcomes, treatments, and covariates 
     thetadraws[[d]]=sample.theta.d(NN[d,], SS[d,], nx, RR)
   }
   
-  
-  
   Dt_x=factor(rep(0,RR), levels=1:k)
   thetaxdraw=rep(0,k)
   for (x in 1:nx) {
@@ -86,7 +84,7 @@ DtchoiceMCMCProbabilities=function(Y,D,X, #outcomes, treatments, and covariates 
       for (d in 1:k) thetaxdraw[d]=thetadraws[[d]][r,x]
       Dt_x[r]=which.max(thetaxdraw-C)
     }
-    P_Dt[x,]=table(Dt_x)/RR
+    P_Dt[x,]=tabulate(Dt_x, nbins=k)/RR
   }
   
   P_Dt=as_tibble(P_Dt)
