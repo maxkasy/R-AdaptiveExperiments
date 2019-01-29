@@ -1,0 +1,18 @@
+    
+    # # chunk for debugging:
+    #   browser() #invoke command line for debugging
+    #   Rprof()
+    #   R=1
+    #   sapply(1:R, function(i) Simulate2WaveDesign(N1,N2,C,theta, "optimal"))
+    #   summaryRprof()
+    
+  
+      
+# notes on timing:
+      # for optimal, most time spent in betabinomial
+      # for optimalhat, most time in Vfunction
+      # the latter scales better for larger V2
+      # but both take very long
+  
+      # time for optimalhandpicked, optimalrandom, betterhalf, Thompson, is negligible
+      # conundrum: why is calculation much faster in app?

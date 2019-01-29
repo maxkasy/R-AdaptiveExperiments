@@ -1,0 +1,80 @@
+#  CalibratedSimulationFunctions 
+
+### calibratedSimulationFunctions.R 
+DesignTable : function (DataList, methods, MC_replicates = 100, columnames = NULL, filename = NULL, 
+    DoHistograms = F)  
+ExpectedRegret : function (wavesizes, C, theta, methods, R)  
+PrintRegretHistogram : function (shareTreatmentsList, filename, dataname, MC_replicates, waves)  
+PrintRegretTable : function (RegretTable, filename, caption, MC_replicates, nmethods)  
+SimulateTWaveDesign : function (wavesizes, C, theta, method = "modifiedthompson")  
+
+
+
+### ReadData.R 
+DataToTheta : function (filename, dataname, k, strataVars, outcomename, treatmentname, covariatesnames, 
+    printFigures = FALSE)  
+PrintDataFigures : function (stratasizes, sumstats, theta, filename, dataname, outcomename, treatmentname, 
+    k)  
+ReadAllData : function (printFigures = F)  
+
+
+
+#  IllustrationFunctions 
+
+### Illustration_NonConvexity_Functions.R 
+MSEcalc : function (theta, N)  
+powerCalc : function (theta, N)  
+stylizedDesign : function (A, B, C, N)  
+
+
+
+#  OptimalAssignmentFunctions 
+
+### SimulatedWelfareFunctions.R 
+Seed : function (A, B, Nmax)  
+simplex : function (N, k, coverage = "full", RR = 500, thetahat = NULL)  
+simulatedSample : function (D, theta)  
+Uhat : function (A, B, C, n, Vfunction = SWF)  
+
+
+
+### TreatmentAssignmentFunctions.R 
+Dtchoice : function (A, B, C, Nt, method = "optimal")  
+EqualAssignment : function (N, k)  
+GivenAssignment : function (n, k)  
+ProportionalAssignment : function (Shares, Nt)  
+Thompson : function (A, B, Nt)  
+ThompsonProbabilities : function (A, B, RR = 1000)  
+
+
+
+### WelfareFunctions.R 
+betabinomial : function (n, s, a, b)  
+betaposterior : function (D, Y)  
+PolicyChoice : function (A, B, C)  
+Regret : function (D, Y, C, theta)  
+SWF : function (A, B, C)  
+U : function (A, B, C, n, Vfunction = SWF)  
+UoverSimplex : function (A, B, C, N, Ufunction = U, coverage = "full")  
+V : function (A, B, C, NN)  
+
+
+
+### welfareplotsGraphics.R 
+OptimalPilot : function (A, B, C, M, parallel = TRUE)  
+PlotSimplex : function (A, B, C, N)  
+PlotSimplexAlternative : function (A, B, C, N)  
+SimplexPanel : function (N, alternativeplot = FALSE)  
+
+
+
+#  ThompsonHierarchicalFunctions 
+
+### calibratedSimulationFunctionsCovariates.R 
+DesignTableCovariates : function (DataList, methods, MC_replicates = 100, columnames = NULL, filename = NULL)  
+ExpectedRegretCovariates : function (wavesizes, C, theta, PX, methods, R)  
+SimulateTWaveDesignCovariates : function (wavesizes, C, theta, PX, method = "stratified")  
+
+
+
+### covariateTimes.R 
