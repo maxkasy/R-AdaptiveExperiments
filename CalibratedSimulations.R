@@ -13,10 +13,10 @@ source("ThompsonHierarchicalFunctions/calibratedSimulationFunctionsCovariates.R"
 #gridcolor="azure1"
 fillcolor="skyblue4"
 
-printFigures=F
+printFigures=T
 DoNoCovariates=F
 DoHistograms=F
-DoCovariates=T
+DoCovariates=F
 
 DataList=ReadAllData(printFigures)
 

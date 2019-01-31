@@ -62,7 +62,7 @@ DataToTheta=function(filename, dataname, k, strataVars, outcomename,treatmentnam
     
     PX=NX/sum(NX)
     
-    #think about unifying output of this function across old simulations / Thompson!
+    
     list(filename=filename, dataname=dataname, N=N,
          theta=theta$meanout, sumstats=sumstats, stratasizes =stratasizes, key=key, #output for old simulations (no covariates)
          SS=SS, NN=NN, PX=PX, k=k) #output for thompson simulations (using covariates)
@@ -142,8 +142,58 @@ PrintDataFigures=function(stratasizes,sumstats,theta, filename,dataname,outcomen
     
 }
 
-
-
+# Alternative, more compact printout of parameter values
+print_one_datafigure=function(DataList) {
+    thetas=map(DataList, "theta")
+    names=map(DataList, "dataname")
+    NoTreatments=map(thetas,length)
+    
+    
+    plot_data=tibble(thetas = unlist(thetas),
+                     names = unlist(rep(names, NoTreatments)))
+                     
+        
+    ggplot(plot_data, aes(x=fct_rev(as.factor(names)), y=thetas)) +
+        geom_point(color=fillcolor,size=2,alpha=.7) +
+        scale_y_continuous(limits=c(0,1)) +
+        coord_flip() +
+        theme_light() +
+        theme(#panel.background = element_rect(fill = backcolor, colour = NA),
+            #panel.grid.major = element_blank(),
+            panel.grid.minor = element_blank(),
+            axis.ticks.x=element_blank(),
+            plot.caption=element_text(size=7)) +
+        labs(title="Calibrated parameter values",
+             x="", y="Mean outcome for each treatment")
+    
+    ggsave("../Figures/Applications/CalibratedTheta_NoStrata.pdf", width = 8, height=2.5)    
+    
+    browser()
+    
+    for (application in 1:length(DataList)) {
+        
+        ggplot(DataList[[application]]$sumstats, 
+               aes(x=factor(strata, levels = rev(levels(strata))), y=meanout,group=treatment, colour=treatment)) +
+            geom_line(size=.2,alpha=.5) +
+            geom_point(size=2,alpha=.7) +
+            scale_y_continuous(limits=c(0,1)) +
+            scale_colour_viridis_d() +
+            coord_flip() +
+            theme_light() +
+            theme(#panel.background = element_rect(fill = backcolor, colour = NA),
+                #panel.grid.major = element_blank(),
+                panel.grid.minor = element_blank(),
+                axis.ticks.x=element_blank(),
+                plot.caption=element_text(size=7)) +
+            labs(title=DataList[[application]]$dataname,
+                 subtitle="Calibrated parameter values",
+                 x="Stratum", y="Mean outcome for each treatment")
+        
+        
+        ggsave(paste("../Figures/Applications/Compact_", DataList[[application]]$filename, ".pdf", sep=""), 
+               width = 8, height = 0.3*length(DataList[[application]]$PX) +1)
+    }
+}
 
 
 ReadAllData=function(printFigures=F){
@@ -154,6 +204,7 @@ ReadAllData=function(printFigures=F){
     DataList=pmap(ApplicationTable, function(filename, dataname, k, stratavars, outcomename,treatmentname, covariatesnames) #make sure ApplicationTable has these column names
                   DataToTheta(filename, dataname, k, stratavars, outcomename, treatmentname, covariatesnames, printFigures=printFigures))
         
-
+    if (printFigures) print_one_datafigure(DataList)
+    
     DataList
 }

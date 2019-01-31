@@ -199,7 +199,8 @@ DtchoiceThompsonHierarchicalModified=function(Y,D,X, #outcomes, treatments, and 
     Dt_list=map(1:nx, #for each stratum...
                 function(x) {
                     P_Dt_x_modified=P_Dt[x,]*(1-P_Dt[x,]) #calculate modified Thompson probabilities
-                    P_Dt_x_modified=P_Dt_x_modified/sum(P_Dt_x_modified)
+                    if (sum(P_Dt_x_modified) >0) P_Dt_x_modified=P_Dt_x_modified/sum(P_Dt_x_modified)
+                        else P_Dt_x_modified=P_Dt[x,]
                     ProportionalAssignment(P_Dt_x_modified, Xt_counts[x]) #do proportional assignment based on modified probabilities
                 })
 
