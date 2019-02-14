@@ -163,12 +163,10 @@ print_one_datafigure=function(DataList) {
             panel.grid.minor = element_blank(),
             axis.ticks.x=element_blank(),
             plot.caption=element_text(size=7)) +
-        labs(title="Calibrated parameter values",
-             x="", y="Mean outcome for each treatment")
+        labs(#title="Calibrated parameter values",
+             x="", y="Average outcome for each treatment")
     
     ggsave("../Figures/Applications/CalibratedTheta_NoStrata.pdf", width = 8, height=2.5)    
-    
-    browser()
     
     for (application in 1:length(DataList)) {
         
@@ -178,6 +176,7 @@ print_one_datafigure=function(DataList) {
             geom_point(size=2,alpha=.7) +
             scale_y_continuous(limits=c(0,1)) +
             scale_colour_viridis_d() +
+            guides(colour=FALSE) +
             coord_flip() +
             theme_light() +
             theme(#panel.background = element_rect(fill = backcolor, colour = NA),

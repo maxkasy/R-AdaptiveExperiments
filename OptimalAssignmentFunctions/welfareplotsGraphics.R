@@ -136,3 +136,86 @@ OptimalPilot=function(A,B,C,M, parallel=TRUE){
           #panel.background = element_rect(fill = backcolor, colour = NA),
           axis.line.x = element_line(size = 0.5, colour = "black"))
 }
+
+
+
+# Function to plot optimal assignment as function or first period outcomes
+PlotOptimalAssignment=function(n1, N2, k=3){ 
+    
+    #possible success vectors
+    nplus1=n1+1;
+    success_rows=prod(nplus1)
+    successes=matrix(0, success_rows, k)
+    i=0:(success_rows-1)
+    for (j in k:1) { #mapping each element of i into corresponding vector of successes
+        successes[,j]=i%%nplus1[j]
+        i=i%/%nplus1[j]
+    }
+    
+    # optimal treatment assignment for each success vector
+    choices=matrix(0, success_rows, k)
+    for (i in 1:success_rows) {
+        A=successes[i,] +1
+        B=n1-successes[i,] +1
+        
+        USimplex=UoverSimplex(A,B,rep(0,k),N2, Ufunction=U, coverage="full")
+        choices[i,]=as_vector(USimplex[which.max(USimplex$U), 1:k])
+    }
+    
+    ChoiceSimplex=as_tibble(cbind(successes, choices))
+    names(ChoiceSimplex)=c(paste("s1_", 1:k,sep=""), paste("n2_", 1:k,sep=""))
+    
+
+    #plotTitle=bquote(s[1]^3 ~" = " ~ .(s3))
+    shifter=.15
+    
+    ggplot(ChoiceSimplex) +
+        geom_linerange(aes(x=s1_1-shifter, ymin=s1_2, ymax=s1_2+n2_1/(N2+1)), size=2, color="skyblue4") +
+        geom_linerange(aes(x=s1_1, ymin=s1_2, ymax=s1_2+n2_2/(N2+1)), size=2, color="skyblue4") +
+        geom_linerange(aes(x=s1_1+shifter, ymin=s1_2, ymax=s1_2+n2_3/(N2+1)), size=2, color="skyblue4") +
+        geom_text(aes(x=s1_1-shifter, y=s1_2 -shifter, label=n2_1), size = 3) +
+        geom_text(aes(x=s1_1, y=s1_2 -shifter, label=n2_2), size = 3) +
+        geom_text(aes(x=s1_1+shifter, y=s1_2 -shifter, label=n2_3), size = 3) +
+        facet_wrap(~s1_3) +
+        theme_light() + 
+        theme(panel.grid.minor = element_blank(),
+              #panel.background = element_rect(fill = backcolor, colour = NA),
+              plot.title = element_text(hjust = 0.5)) +
+        coord_fixed(ratio = 1, xlim = c(-.5,n1[1]+.5), ylim=c(-.5,n1[2]+.8)) +
+        labs(#title=expression(s[1]^3),
+             title=paste("Size of wave 2 is", N2),
+             x=expression(s[1]^1),
+             y=expression(s[1]^2)
+             )
+    
+    filename=paste(c("../Figures/OptimalTreatments/OptimalAssignment_N1_", sum(n1), "_N2_", N2 ,".pdf"), collapse="")
+    ggsave(filename, width = 10, height = 5)
+
+}
+
+
+ThompsonMappingPlots=function(p_list) {
+    modifiedThompsonTibble=function(p,i) {
+        q_temp=p*(1-p)
+        tibble(i=i,p=p,q=q_temp/sum(q_temp))
+    }
+    
+    tibble_illustration=map2(p_list, 1:length(p_list), modifiedThompsonTibble) %>%
+        data.table::rbindlist()
+    
+    ggplot(tibble_illustration) +
+        geom_segment(aes(x=0, y=p, xend=1, yend=q), size=2, color="skyblue4") +
+        geom_vline(xintercept=0, color="lightgrey")+ geom_vline(xintercept=1,color="lightgrey") +
+        facet_grid(cols=vars(i))+
+        scale_x_continuous(breaks=c(0,1), labels=c("p", "q")) +
+        scale_y_continuous(limits=c(0,1)) +
+        theme_minimal() +
+        labs(x="", y="")+
+        theme(panel.grid.minor = element_blank(),
+              axis.text.x = element_text(size = 16),
+              strip.text.x = element_blank()
+              )
+    
+    filename="../Figures/ThompsonIllustration.pdf"
+    ggsave(filename, width = 10, height = 4)
+}

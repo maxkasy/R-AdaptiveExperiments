@@ -1,8 +1,7 @@
 #  CalibratedSimulationFunctions 
 
 ### calibratedSimulationFunctions.R 
-DesignTable : function (DataList, methods, MC_replicates = 100, columnames = NULL, filename = NULL, 
-    DoHistograms = F)  
+DesignTable : function (DataList, methods, MC_replicates = 100, columnames = NULL, filename = NULL, DoHistograms = F)  
 ExpectedRegret : function (wavesizes, C, theta, methods, R)  
 PrintRegretHistogram : function (shareTreatmentsList, filename, dataname, MC_replicates, waves)  
 PrintRegretTable : function (RegretTable, filename, caption, MC_replicates, nmethods)  
@@ -11,10 +10,9 @@ SimulateTWaveDesign : function (wavesizes, C, theta, method = "modifiedthompson"
 
 
 ### ReadData.R 
-DataToTheta : function (filename, dataname, k, strataVars, outcomename, treatmentname, covariatesnames, 
-    printFigures = FALSE)  
-PrintDataFigures : function (stratasizes, sumstats, theta, filename, dataname, outcomename, treatmentname, 
-    k)  
+DataToTheta : function (filename, dataname, k, strataVars, outcomename, treatmentname, covariatesnames, printFigures = FALSE)  
+print_one_datafigure : function (DataList)  
+PrintDataFigures : function (stratasizes, sumstats, theta, filename, dataname, outcomename, treatmentname, k)  
 ReadAllData : function (printFigures = F)  
 
 
@@ -62,9 +60,11 @@ V : function (A, B, C, NN)
 
 ### welfareplotsGraphics.R 
 OptimalPilot : function (A, B, C, M, parallel = TRUE)  
+PlotOptimalAssignment : function (n1, N2, k = 3)  
 PlotSimplex : function (A, B, C, N)  
 PlotSimplexAlternative : function (A, B, C, N)  
 SimplexPanel : function (N, alternativeplot = FALSE)  
+ThompsonMappingPlots : function (p_list)  
 
 
 
@@ -74,7 +74,45 @@ SimplexPanel : function (N, alternativeplot = FALSE)
 DesignTableCovariates : function (DataList, methods, MC_replicates = 100, columnames = NULL, filename = NULL)  
 ExpectedRegretCovariates : function (wavesizes, C, theta, PX, methods, R)  
 SimulateTWaveDesignCovariates : function (wavesizes, C, theta, PX, method = "stratified")  
+SimulateX : function (PX, N)  
+SimulateY : function (theta, D, X)  
 
 
 
-### covariateTimes.R 
+### functionlist.Rmd 
+
+
+
+### MCMC_HierarchicalThompson.R 
+draw.alpha : function (alpha, beta, theta, prop.sd, nx)  
+draw.beta : function (alpha, beta, theta, prop.sd, nx)  
+draw.thetas : function (alpha, beta, NNd, SSd, nx)  
+DtchoiceCovariates : function (Y, D, X, k, nx, Xt, method = "stratified")  
+DtchoiceMCMCProbabilities : function (Y, D, X, k, nx, C = rep(0, k), RR = 2000)  
+DtchoiceThompsonHierarchical : function (Y, D, X, k, nx, Xt)  
+DtchoiceThompsonHierarchicalExpected : function (Y, D, X, k, nx, Xt)  
+DtchoiceThompsonHierarchicalModified : function (Y, D, X, k, nx, Xt)  
+hierarchicalPosteriorMean : function (Y, D, X, k, nx)  
+log.prior : function (alpha, beta)  
+ProportionalAssignment : function (Shares, nt)  
+sample.theta.d : function (NNd, SSd, nx, RR = 2000)  
+StratifiedAssignment : function (X, k, nx)  
+
+
+
+### ThompsonHierarchical_old.R 
+betabinomialMLE : function (NN, SS)  
+DtchoiceCovariates : function (Y, D, X, k, nx, Xt, method = "stratified")  
+DtchoiceThompson : function (Y, D, k, Nt)  
+DtchoiceThompsonHierarchical : function (Y, D, X, k, nx, Xt)  
+DtchoiceThompsonHierarchicalAlternating : function (Y, D, X, k, nx, Xt)  
+DtchoiceThompsonHierarchicalModified : function (Y, D, X, k, nx, Xt, RR)  
+DtchoiceThompsonModified : function (Y, D, k, Nt, RR)  
+hierarchicalPosteriorDraw : function (NN, SS, LLH, AB = NULL)  
+hierarchicalPosteriorMean : function (Y, D, X, empiricalBayes = T, draws = 1000)  
+SimulateX : function (PX, N)  
+SimulateY : function (theta, D, X)  
+StratifiedAssignment : function (X, k, nx)  
+
+
+
