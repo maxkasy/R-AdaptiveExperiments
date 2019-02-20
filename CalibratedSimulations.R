@@ -12,11 +12,12 @@ source("ThompsonHierarchicalFunctions/calibratedSimulationFunctionsCovariates.R"
 #backcolor="azure2" #background color for plots
 #gridcolor="azure1"
 fillcolor="skyblue4"
+today=Sys.Date()
 
 printFigures=T
-DoNoCovariates=F
-DoHistograms=F
-DoCovariates=F
+DoNoCovariates=T
+DoHistograms=T
+DoCovariates=T
 
 DataList=ReadAllData(printFigures)
 
@@ -42,7 +43,7 @@ if (DoNoCovariates) {
           applicationData[[i]]$wavesizes = rep(floor(applicationData[[i]]$N * Mult / wavenumbers[i]) ,wavenumbers[i])
           applicationData[[i]]$waves=wavenumbers[i]
         }
-        filename=paste(Sys.Date(),"_CalibratedSimulations_", DataList[[application]]$filename, "_" ,Mult, sep="")
+        filename=paste(today,"_CalibratedSimulations_", DataList[[application]]$filename, "_" ,Mult, sep="")
         DesignTable(applicationData,methods,MC_replicates,columnames,filename, DoHistograms)
       }
     }
@@ -69,7 +70,7 @@ if (DoCovariates) {
           applicationData[[i]]$wavesizes = rep(floor(applicationData[[i]]$N * Mult / wavenumbers[i]) ,wavenumbers[i])
           applicationData[[i]]$waves=wavenumbers[i]
         }
-        filename=paste(Sys.Date(),"_Covariates_CalibratedSimulations_", DataList[[application]]$filename, "_" ,Mult, sep="")
+        filename=paste(today,"_Covariates_CalibratedSimulations_", DataList[[application]]$filename, "_" ,Mult, sep="")
         DesignTableCovariates(applicationData,methods,MC_replicates,columnames,filename)
       }
     }

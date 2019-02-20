@@ -189,7 +189,7 @@ PrintRegretHistogram=function(shareTreatmentsList,filename, dataname,MC_replicat
   histTibble$waves %<>% factor(levels=c("2 waves", "4 waves", "10 waves"))
   histTibble$algorithm %<>% factor(levels=c("non_adaptive", "modifiedThompson"))
   maxregret=max(histTibble$regret)
-  browser()
+
   #calculate CDF of regret
   histTibble %<>% arrange(waves, algorithm,regret, probability) %>%
     group_by(waves, algorithm) %>%
@@ -213,7 +213,8 @@ PrintRegretHistogram=function(shareTreatmentsList,filename, dataname,MC_replicat
       axis.ticks.x=element_blank(),
       axis.ticks.y=element_blank(),
       #plot.caption=element_text(size=7),
-      legend.position = "top") +
+      legend.position = "top",
+      strip.text = element_text(size = 10)) +
     labs(title=dataname, fill="",
          x="Regret", y="Share of simulations")
   
@@ -235,9 +236,12 @@ PrintRegretHistogram=function(shareTreatmentsList,filename, dataname,MC_replicat
     theme(axis.ticks.x=element_blank(),
           axis.ticks.y=element_blank(),
           #plot.caption=element_text(size=7),
-          legend.position = "top") +
-    labs(title=dataname, color="",
-         x="Quantile of regret", y="Share of simulations")    
+          legend.position = "top",
+          strip.text = element_text(size = 10)) +
+    labs(title=" ", 
+         color="",
+         x="Quantile of regret", 
+         y="Share of simulations")    
   
   quantile_pathname=paste("../Figures/Simulations/Histograms/",
                           filename, "_RegretQuantile.pdf", sep="")
