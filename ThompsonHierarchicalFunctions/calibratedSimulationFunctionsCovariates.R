@@ -71,10 +71,9 @@ ExpectedRegretCovariates=function(wavesizes,C,theta,
                 "expected Thompson",
                 "modified Thompson")
   shareTreatments=list() #empty list to store vectors of shares assigned to each treatment
-#browser()
+
   #parallelize simulations
-  no_cores = detectCores()
-  clust = makeCluster(no_cores, type="FORK")  #forking requires mac or Linux OS!
+  plan(multiprocess)
     
   for (i in methods) { #pick here which methods to simulate
     sink("status_ExpectedRegret_Covariates.txt") #status file to track computations
@@ -83,7 +82,7 @@ ExpectedRegretCovariates=function(wavesizes,C,theta,
        "method", Methods[i])
     sink()
 
-    regretTWave=parSapply(clust, 1:R, function(j) SimulateTWaveDesignCovariates(wavesizes,C,theta,PX, Methods[i]))
+    regretTWave=future_sapply(1:R, function(j) SimulateTWaveDesignCovariates(wavesizes,C,theta,PX, Methods[i]))
     regretTable=rbind(get0("regretTable"),
                       tibble(Statistic=paste("$\\quad$ ", MethodNames[i], sep=""),
                              Value=mean(regretTWave)))
@@ -92,9 +91,6 @@ ExpectedRegretCovariates=function(wavesizes,C,theta,
                                Value=mean(regretTWave==0)))
     #shareTreatments[[Methods[i]]]=table(factor(regretTWave)) #store shares assigned to each treatment for method i
   }
-  
-  
-  stopCluster(clust)
   
   lastrows=tibble(Statistic=c("Units per wave"),Value=c(wavesizes[1]))
   # lastrows=tibble(Statistic=c("Units per wave", "Number of treatments", "Number of strata"),

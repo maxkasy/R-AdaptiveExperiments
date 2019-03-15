@@ -14,9 +14,9 @@ source("ThompsonHierarchicalFunctions/calibratedSimulationFunctionsCovariates.R"
 fillcolor="skyblue4"
 today=Sys.Date()
 
-printFigures=T
-DoNoCovariates=T
-DoHistograms=T
+printFigures=F
+DoNoCovariates=F
+DoHistograms=F
 DoCovariates=T
 
 DataList=ReadAllData(printFigures)

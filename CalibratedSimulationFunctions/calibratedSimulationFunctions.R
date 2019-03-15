@@ -1,5 +1,5 @@
 #This script implements calibrated simulations, sampling outcomes from the empirical distribution of an actual experiment.
-library(parallel)
+library(future.apply)
 library(tidyverse)
 library(forcats)
 library(xtable)
@@ -42,11 +42,10 @@ SimulateTWaveDesign=function(wavesizes,C,theta, method="modifiedthompson"){
 
 ExpectedRegret=function(wavesizes,C,theta,methods,R){
   k=length(theta) #number of treatment arms
-
+  
   #parallelize simulations
-  no_cores = detectCores()
-  clust = makeCluster(no_cores, type="FORK")  #forking requires mac or Linux OS!
-
+  plan(multiprocess)
+  
   Methods=c("conventional",
                    "optimalhandpicked",
                    "optimalrandom",
@@ -81,9 +80,8 @@ ExpectedRegret=function(wavesizes,C,theta,methods,R){
           "theta", theta, "\n",
           "method", Methods[i])
       sink()  
-    #browser()  
     
-    regretTWave=parSapply(clust, 1:R, function(j) SimulateTWaveDesign(wavesizes,C,theta, Methods[i]))
+    regretTWave=future_sapply(1:R, function(j) SimulateTWaveDesign(wavesizes,C,theta, Methods[i]))
     regretTable=rbind(get0("regretTable"),
                       tibble(Statistic=paste("$\\quad$ ", MethodNames[i], sep=""),
                                 Value=mean(regretTWave[1,])))
@@ -93,9 +91,6 @@ ExpectedRegret=function(wavesizes,C,theta,methods,R){
     
     shareTreatments[[Methods[i]]]=table(factor(regretTWave[1,], levels=max(theta)-theta)) #store shares assigned to each treatment for method i
   }
-  
- 
-  stopCluster(clust)
   
   lastrows=tibble(Statistic=c("Units per wave"),#, "Number of treatments"),
                  Value=c(wavesizes[1]))#, k))
