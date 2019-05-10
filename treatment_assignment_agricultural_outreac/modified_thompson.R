@@ -64,7 +64,8 @@ DtchoiceThompsonProbabilities = function(Y, D, #outcomes and treatments thus far
 DtchoiceThompson_modified = function(Y, D, #outcomes and treatments thus far
                                      k, #number of treatments
                                      C = rep(0, k), #vector of treatment cost
-                                     Nt) {
+                                     Nt,
+                                     return_probabilities=F) {
   # number of observations for period t
   alpha = DtchoiceThompsonProbabilities(Y, D, k, C)
   if (max(alpha) < 1) {
@@ -73,5 +74,7 @@ DtchoiceThompson_modified = function(Y, D, #outcomes and treatments thus far
   } else {
     Shares = alpha
   }
-  Dt = ProportionalAssignment(Shares, Nt)
+  
+  if (return_probabilities) return(Shares)
+    else return(ProportionalAssignment(Shares, Nt))
 }

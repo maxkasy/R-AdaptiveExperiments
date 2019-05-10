@@ -1,0 +1,114 @@
+---
+title: "PAD Odissa"
+output: 
+  flexdashboard::flex_dashboard:
+    orientation: columns
+    vertical_layout: fill
+    theme: yeti
+---
+
+```{r setup, include=FALSE}
+library(flexdashboard)
+library(tidyverse)
+source("ReadDataApp.R")
+source("modified_thompson.R")
+#source("optimal_stopping.R")
+```
+
+```{r, message=F, echo=F, warning=F}
+datapath = "data/priordata_test_nocovar.csv"
+k=3
+control_treatment=1
+treatment_names = c("bli", "bla", "blo")
+
+priordata=ReadDataApp(datapath)
+```
+
+# Summary statistics
+
+
+Column 1
+--------------------------------------------------
+
+
+
+### Number of observations 
+
+
+`r valueBox(length(priordata$Y))`
+
+### Success rate
+`r gauge(round(mean(priordata$Y), digits=2), min=0, max=1)`
+
+
+
+
+### Success rate by treatment
+
+```{r, message=F, echo=F, cache=F}
+by_treatment= as_tibble(priordata[c("Y","D")]) %>% 
+  group_by(D, .drop=FALSE) %>% 
+  summarise(avg=mean(Y), count=n()) %>% 
+  mutate(treatment=factor(treatment_names, levels=treatment_names))
+
+
+ggplot(by_treatment, aes(x=treatment, y=avg, color = treatment)) +
+    geom_point(size=5) +
+    scale_color_viridis_d() +
+    coord_flip() +
+    ylim(0, NA) +
+    theme_minimal()+
+    theme(legend.position = "none")
+```                    
+
+
+Column 2
+--------------------------------------------------
+
+
+
+### Past distribution across treatments
+
+```{r, message=F, echo=F, cache=F}
+ggplot(by_treatment, aes(x=treatment, y=count, fill=treatment)) +
+    geom_col() +
+    scale_fill_viridis_d() +
+    coord_flip() +
+    theme_minimal() +
+    theme(legend.position = "none")
+```
+
+
+
+### Current assignment probabilities
+
+```{r, echo=F}
+P_current = DtchoiceThompson_modified(
+  priordata$Y,
+  priordata$D,
+  priordata$k,
+  Nt = Nt,
+  return_probabilities = T
+)
+
+#knitr::kable(P_current, digits=2)
+P_current_tibble = tibble(share = as_vector(P_current),
+                          treatment = factor(treatment_names, levels = treatment_names))
+
+ggplot(P_current_tibble, aes(x = treatment, y = share, fill = treatment)) +
+  geom_col() +
+  scale_fill_viridis_d() +
+  coord_flip() +
+  theme_minimal() +
+  theme(legend.position = "none")
+```
+
+
+
+# Source data
+
+
+
+`r read_csv(datapath) %>%
+  knitr::kable(row.names=F)`
+
