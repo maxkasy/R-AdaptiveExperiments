@@ -166,7 +166,7 @@ print_one_datafigure=function(DataList) {
         labs(#title="Calibrated parameter values",
              x="", y="Average outcome for each treatment")
     
-    ggsave("../Figures/Applications/CalibratedTheta_NoStrata.pdf", width = 8, height=2.5)    
+    ggsave("../Figures/Applications/CalibratedTheta_NoStrata.pdf", width = 7, height=1.5)    
     
     for (application in 1:length(DataList)) {
         
